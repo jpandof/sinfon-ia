@@ -4,6 +4,35 @@ import { Button } from './components/ui/button'
 import { Modal } from './components/Modal'
 import { Search, Hash, Grid3X3, Moon, Sun, X, Filter, Users, Tag, Sparkles, Zap, Star, ArrowRight, Eye, ChevronDown, ChevronUp } from 'lucide-react'
 
+function useScrollDirection() {
+  const [isVisible, setIsVisible] = useState(true)
+  const [lastScrollY, setLastScrollY] = useState(0)
+
+  React.useEffect(() => {
+    const handleScroll = () => {
+      const currentScrollY = window.scrollY
+      
+      // Solo ocultar si hemos hecho scroll hacia abajo más de 100px
+      if (currentScrollY < 100) {
+        setIsVisible(true)
+      } else if (currentScrollY > lastScrollY && currentScrollY > 100) {
+        // Scrolling down - hide header
+        setIsVisible(false)
+      } else if (currentScrollY < lastScrollY) {
+        // Scrolling up - show header
+        setIsVisible(true)
+      }
+      
+      setLastScrollY(currentScrollY)
+    }
+
+    window.addEventListener('scroll', handleScroll, { passive: true })
+    return () => window.removeEventListener('scroll', handleScroll)
+  }, [lastScrollY])
+
+  return isVisible
+}
+
 function useTheme() {
   const [dark, setDark] = useState(() => {
     if (typeof window === 'undefined') return false
@@ -21,6 +50,7 @@ const App: React.FC = () => {
   const [selected, setSelected] = useState<string | null>(null)
   const [showFilters, setShowFilters] = useState(false)
   const { dark, toggle } = useTheme()
+  const isHeaderVisible = useScrollDirection()
 
   const filtered = useMemo(() => {
     const query = q.trim().toLowerCase()
@@ -56,7 +86,9 @@ const App: React.FC = () => {
         <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-96 h-96 bg-gradient-to-br from-indigo-400/10 to-purple-400/10 rounded-full blur-3xl animate-pulse delay-500"></div>
       </div>
 
-      <header className="sticky top-0 z-40 border-b border-white/20 bg-white/80 dark:bg-slate-900/80 backdrop-blur-xl supports-[backdrop-filter]:bg-white/80 dark:supports-[backdrop-filter]:bg-slate-900/80">
+      <header className={`fixed top-0 left-0 right-0 z-40 border-b border-white/20 bg-white/80 dark:bg-slate-900/80 backdrop-blur-xl supports-[backdrop-filter]:bg-white/80 dark:supports-[backdrop-filter]:bg-slate-900/80 transition-transform duration-300 ${
+        isHeaderVisible ? 'translate-y-0' : '-translate-y-full'
+      }`}>
         <div className="container flex h-20 items-center justify-between gap-4">
           <div className="flex items-center gap-4">
             <div className="relative">
@@ -96,7 +128,7 @@ const App: React.FC = () => {
         </div>
       </header>
 
-      <main className="container py-8 relative z-10">
+      <main className="container py-8 relative z-10 mt-20">
         {/* Hero Search Section */}
         <div className="mb-12 text-center">
           <div className="mb-8">
