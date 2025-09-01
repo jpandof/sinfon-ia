@@ -1,6 +1,7 @@
 import React, { useMemo, useState } from 'react'
 import { DOMAINS, type Domain } from './data/domains'
 import { Button } from './components/ui/button'
+import { Modal } from './components/Modal'
 import { Search, Hash, Grid3X3, Moon, Sun, X, Filter, Users, Tag, Sparkles, Zap, Star, ArrowRight, Eye, ChevronDown, ChevronUp } from 'lucide-react'
 
 function useTheme() {
@@ -344,83 +345,71 @@ function AgentsPreview({ domainKey, query }: { domainKey: Domain['key'], query?:
         </span>
       </Button>
       
-      {open && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 overflow-y-auto">
-          <div className="absolute inset-0 bg-black/60 backdrop-blur-sm" onClick={() => setOpen(false)} />
-          <div className="relative z-10 w-full max-w-6xl my-8 rounded-3xl border-2 border-slate-200 dark:border-slate-700 bg-white/95 dark:bg-slate-900/95 backdrop-blur-xl shadow-2xl overflow-hidden">
-            <div className="flex items-center justify-between gap-4 border-b border-slate-200 dark:border-slate-700 bg-white/90 dark:bg-slate-900/90 backdrop-blur-sm p-6">
-              <div>
-                <h4 className="text-2xl font-bold bg-gradient-to-r from-purple-600 to-pink-600 bg-clip-text text-transparent">
-                  Agentes de {DOMAINS.find(d => d.key === domainKey)?.title}
-                </h4>
-                <p className="text-slate-600 dark:text-slate-400 flex items-center gap-2 mt-1">
-                  <Sparkles className="h-4 w-4" />
-                  {agents.length} agente{agents.length !== 1 ? 's' : ''} especializado{agents.length !== 1 ? 's' : ''} disponible{agents.length !== 1 ? 's' : ''}
-                </p>
+      <Modal
+        isOpen={open}
+        onClose={() => setOpen(false)}
+        title={`Agentes de ${DOMAINS.find(d => d.key === domainKey)?.title}`}
+        subtitle={
+          <span className="flex items-center gap-2">
+            <Sparkles className="h-4 w-4" />
+            {agents.length} agente{agents.length !== 1 ? 's' : ''} especializado{agents.length !== 1 ? 's' : ''} disponible{agents.length !== 1 ? 's' : ''}
+          </span>
+        }
+      >
+        {agents.length === 0 ? (
+          <div className="flex flex-col items-center justify-center py-12 text-center">
+            <div className="mb-6 relative">
+              <div className="absolute inset-0 bg-gradient-to-r from-slate-200 to-slate-300 dark:from-slate-700 dark:to-slate-600 rounded-full blur opacity-50"></div>
+              <div className="relative flex h-16 w-16 items-center justify-center rounded-full bg-gradient-to-r from-slate-100 to-slate-200 dark:from-slate-800 dark:to-slate-700">
+                <Users className="h-8 w-8 text-slate-400" />
               </div>
-              <Button variant="ghost" size="icon" onClick={() => setOpen(false)} className="rounded-full">
-                <X className="h-5 w-5" />
-              </Button>
             </div>
-            
-            <div className="p-6 max-h-[70vh] overflow-y-auto">
-              {agents.length === 0 ? (
-                <div className="flex flex-col items-center justify-center py-12 text-center">
-                  <div className="mb-6 relative">
-                    <div className="absolute inset-0 bg-gradient-to-r from-slate-200 to-slate-300 dark:from-slate-700 dark:to-slate-600 rounded-full blur opacity-50"></div>
-                    <div className="relative flex h-16 w-16 items-center justify-center rounded-full bg-gradient-to-r from-slate-100 to-slate-200 dark:from-slate-800 dark:to-slate-700">
-                      <Users className="h-8 w-8 text-slate-400" />
+            <p className="text-slate-600 dark:text-slate-400 text-lg">
+              No hay agentes que coincidan con la búsqueda
+            </p>
+          </div>
+        ) : (
+          <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+            {agents.map(a => (
+              <div key={a.id} className="group relative">
+                <div className="absolute -inset-1 bg-gradient-to-r from-purple-500/10 via-pink-500/10 to-indigo-500/10 rounded-2xl blur opacity-0 group-hover:opacity-100 transition-all duration-300"></div>
+                <div className="relative rounded-2xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 p-5 hover:shadow-xl hover:border-purple-500/30 transition-all duration-300 hover:-translate-y-1">
+                  <div className="mb-4 flex items-start gap-3">
+                    <div className="text-3xl flex-shrink-0">{a.icon || '🤖'}</div>
+                    <div className="flex-1 min-w-0">
+                      <h5 className="font-bold text-base leading-tight mb-2 group-hover:text-purple-600 dark:group-hover:text-purple-400 transition-colors">{a.name}</h5>
+                      <p className="text-sm text-slate-600 dark:text-slate-300 leading-relaxed">{a.summary}</p>
                     </div>
                   </div>
-                  <p className="text-slate-600 dark:text-slate-400 text-lg">
-                    No hay agentes que coincidan con la búsqueda
-                  </p>
-                </div>
-              ) : (
-                <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-                  {agents.map(a => (
-                    <div key={a.id} className="group relative">
-                      <div className="absolute -inset-1 bg-gradient-to-r from-purple-500/10 via-pink-500/10 to-indigo-500/10 rounded-2xl blur opacity-0 group-hover:opacity-100 transition-all duration-300"></div>
-                      <div className="relative rounded-2xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 p-4 hover:shadow-xl hover:border-purple-500/30 transition-all duration-300">
-                        <div className="mb-3 flex items-start gap-3">
-                          <div className="text-2xl">{a.icon || '🤖'}</div>
-                          <div className="flex-1">
-                            <h5 className="font-bold text-sm leading-tight mb-2 group-hover:text-purple-600 dark:group-hover:text-purple-400 transition-colors">{a.name}</h5>
-                            <p className="text-xs text-slate-600 dark:text-slate-300 leading-relaxed">{a.summary}</p>
-                          </div>
-                        </div>
-                        
-                        {a.tags && a.tags.length > 0 && (
-                          <div className="mb-3 flex flex-wrap gap-1">
-                            {a.tags.slice(0, 3).map(t => (
-                              <span 
-                                key={t} 
-                                className="inline-flex items-center rounded-full border border-slate-200 dark:border-slate-600 px-2 py-0.5 text-xs text-slate-600 dark:text-slate-300 bg-slate-50 dark:bg-slate-700/50 hover:bg-purple-50 hover:border-purple-200 dark:hover:bg-purple-900/20 transition-colors"
-                              >
-                                {t}
-                              </span>
-                            ))}
-                            {a.tags.length > 3 && (
-                              <span className="inline-flex items-center rounded-full border border-slate-200 dark:border-slate-600 px-2 py-0.5 text-xs text-slate-500 dark:text-slate-400 bg-slate-50 dark:bg-slate-700/50">
-                                +{a.tags.length - 3}
-                              </span>
-                            )}
-                          </div>
-                        )}
-                        
-                        <Button size="sm" className="w-full rounded-xl gap-2 text-xs group-hover:bg-gradient-to-r group-hover:from-purple-500 group-hover:to-pink-500 transition-all duration-300">
-                          <Zap className="h-4 w-4" />
-                          Usar agente
-                        </Button>
-                      </div>
+                  
+                  {a.tags && a.tags.length > 0 && (
+                    <div className="mb-4 flex flex-wrap gap-1.5">
+                      {a.tags.slice(0, 3).map(t => (
+                        <span 
+                          key={t} 
+                          className="inline-flex items-center rounded-full border border-slate-200 dark:border-slate-600 px-2.5 py-1 text-xs text-slate-600 dark:text-slate-300 bg-slate-50 dark:bg-slate-700/50 hover:bg-purple-50 hover:border-purple-200 dark:hover:bg-purple-900/20 transition-colors"
+                        >
+                          {t}
+                        </span>
+                      ))}
+                      {a.tags.length > 3 && (
+                        <span className="inline-flex items-center rounded-full border border-slate-200 dark:border-slate-600 px-2.5 py-1 text-xs text-slate-500 dark:text-slate-400 bg-slate-50 dark:bg-slate-700/50">
+                          +{a.tags.length - 3}
+                        </span>
+                      )}
                     </div>
-                  ))}
+                  )}
+                  
+                  <Button size="sm" className="w-full rounded-xl gap-2 text-sm group-hover:bg-gradient-to-r group-hover:from-purple-500 group-hover:to-pink-500 transition-all duration-300">
+                    <Zap className="h-4 w-4" />
+                    Usar agente
+                  </Button>
                 </div>
-              )}
-            </div>
+              </div>
+            ))}
           </div>
-        </div>
-      )}
+        )}
+      </Modal>
     </div>
   )
 }
