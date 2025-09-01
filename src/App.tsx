@@ -222,7 +222,7 @@ const App: React.FC = () => {
             </Button>
           </div>
         ) : (
-          <section className="grid gap-8 sm:grid-cols-2 lg:grid-cols-3">
+          <section className="grid gap-8 sm:grid-cols-2 lg:grid-cols-3 auto-rows-fr">
             {filtered.map((d) => (
               <DomainCard key={d.key} domain={d} query={q} />
             ))}
@@ -261,11 +261,11 @@ function DomainCard({ domain, query }: { domain: Domain, query?: string }) {
   const agentCount = AGENTS.filter(a => a.domain === domain.key).length
   
   return (
-    <div className="group relative">
+    <div className="group relative h-full">
       {/* Glow effect */}
       <div className="absolute -inset-1 bg-gradient-to-r from-purple-500/20 via-pink-500/20 to-indigo-500/20 rounded-3xl blur opacity-0 group-hover:opacity-100 transition-all duration-500"></div>
       
-      <div className="relative rounded-3xl border-2 border-slate-200/50 dark:border-slate-700/50 bg-white/80 dark:bg-slate-800/80 backdrop-blur-sm p-8 transition-all duration-300 hover:border-purple-500/50 hover:shadow-2xl hover:shadow-purple-500/10 hover:-translate-y-1">
+      <div className="relative h-full flex flex-col rounded-3xl border-2 border-slate-200/50 dark:border-slate-700/50 bg-white/80 dark:bg-slate-800/80 backdrop-blur-sm p-8 transition-all duration-300 hover:border-purple-500/50 hover:shadow-2xl hover:shadow-purple-500/10 hover:-translate-y-1">
         <div className="mb-6 flex items-start justify-between">
           <div className="flex items-center gap-4">
             <div className="relative">
@@ -290,12 +290,12 @@ function DomainCard({ domain, query }: { domain: Domain, query?: string }) {
           </div>
         </div>
         
-        <p className="text-slate-600 dark:text-slate-300 leading-relaxed mb-6 text-base">
+        <p className="text-slate-600 dark:text-slate-300 leading-relaxed mb-6 text-base flex-1 min-h-[3rem]">
           {domain.description}
         </p>
         
         {domain.examples && (
-          <div className="mb-6">
+          <div className="mb-6 min-h-[6rem]">
             <ul className="space-y-2">
               {domain.examples.slice(0, 3).map((e, i) => (
                 <li key={i} className="flex items-start gap-3 text-sm text-slate-500 dark:text-slate-400">
@@ -307,7 +307,7 @@ function DomainCard({ domain, query }: { domain: Domain, query?: string }) {
           </div>
         )}
         
-        <div className="pt-6 border-t border-slate-200/50 dark:border-slate-700/50">
+        <div className="pt-6 border-t border-slate-200/50 dark:border-slate-700/50 mt-auto">
           <AgentsPreview domainKey={domain.key} query={query} />
         </div>
       </div>
