@@ -345,10 +345,10 @@ function AgentsPreview({ domainKey, query }: { domainKey: Domain['key'], query?:
       </Button>
       
       {open && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 overflow-y-auto">
           <div className="absolute inset-0 bg-black/60 backdrop-blur-sm" onClick={() => setOpen(false)} />
-          <div className="relative z-10 w-full max-w-6xl max-h-[85vh] rounded-3xl border-2 border-slate-200 dark:border-slate-700 bg-white/95 dark:bg-slate-900/95 backdrop-blur-xl shadow-2xl">
-            <div className="sticky top-0 flex items-center justify-between gap-4 border-b border-slate-200 dark:border-slate-700 bg-white/80 dark:bg-slate-900/80 backdrop-blur-sm p-8 rounded-t-3xl">
+          <div className="relative z-10 w-full max-w-6xl my-8 rounded-3xl border-2 border-slate-200 dark:border-slate-700 bg-white/95 dark:bg-slate-900/95 backdrop-blur-xl shadow-2xl overflow-hidden">
+            <div className="flex items-center justify-between gap-4 border-b border-slate-200 dark:border-slate-700 bg-white/90 dark:bg-slate-900/90 backdrop-blur-sm p-6">
               <div>
                 <h4 className="text-2xl font-bold bg-gradient-to-r from-purple-600 to-pink-600 bg-clip-text text-transparent">
                   Agentes de {DOMAINS.find(d => d.key === domainKey)?.title}
@@ -363,7 +363,7 @@ function AgentsPreview({ domainKey, query }: { domainKey: Domain['key'], query?:
               </Button>
             </div>
             
-            <div className="p-8 overflow-auto max-h-[65vh]">
+            <div className="p-6 max-h-[70vh] overflow-y-auto">
               {agents.length === 0 ? (
                 <div className="flex flex-col items-center justify-center py-12 text-center">
                   <div className="mb-6 relative">
@@ -377,33 +377,38 @@ function AgentsPreview({ domainKey, query }: { domainKey: Domain['key'], query?:
                   </p>
                 </div>
               ) : (
-                <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+                <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
                   {agents.map(a => (
                     <div key={a.id} className="group relative">
                       <div className="absolute -inset-1 bg-gradient-to-r from-purple-500/10 via-pink-500/10 to-indigo-500/10 rounded-2xl blur opacity-0 group-hover:opacity-100 transition-all duration-300"></div>
-                      <div className="relative rounded-2xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 p-6 hover:shadow-xl hover:border-purple-500/30 transition-all duration-300">
-                        <div className="mb-4 flex items-start gap-3">
+                      <div className="relative rounded-2xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 p-4 hover:shadow-xl hover:border-purple-500/30 transition-all duration-300">
+                        <div className="mb-3 flex items-start gap-3">
                           <div className="text-2xl">{a.icon || '🤖'}</div>
                           <div className="flex-1">
-                            <h5 className="font-bold leading-tight mb-2 group-hover:text-purple-600 dark:group-hover:text-purple-400 transition-colors">{a.name}</h5>
-                            <p className="text-sm text-slate-600 dark:text-slate-300 leading-relaxed">{a.summary}</p>
+                            <h5 className="font-bold text-sm leading-tight mb-2 group-hover:text-purple-600 dark:group-hover:text-purple-400 transition-colors">{a.name}</h5>
+                            <p className="text-xs text-slate-600 dark:text-slate-300 leading-relaxed">{a.summary}</p>
                           </div>
                         </div>
                         
                         {a.tags && a.tags.length > 0 && (
-                          <div className="mb-4 flex flex-wrap gap-1.5">
-                            {a.tags.map(t => (
+                          <div className="mb-3 flex flex-wrap gap-1">
+                            {a.tags.slice(0, 3).map(t => (
                               <span 
                                 key={t} 
-                                className="inline-flex items-center rounded-full border border-slate-200 dark:border-slate-600 px-2.5 py-1 text-xs text-slate-600 dark:text-slate-300 bg-slate-50 dark:bg-slate-700/50 hover:bg-purple-50 hover:border-purple-200 dark:hover:bg-purple-900/20 transition-colors"
+                                className="inline-flex items-center rounded-full border border-slate-200 dark:border-slate-600 px-2 py-0.5 text-xs text-slate-600 dark:text-slate-300 bg-slate-50 dark:bg-slate-700/50 hover:bg-purple-50 hover:border-purple-200 dark:hover:bg-purple-900/20 transition-colors"
                               >
                                 {t}
                               </span>
                             ))}
+                            {a.tags.length > 3 && (
+                              <span className="inline-flex items-center rounded-full border border-slate-200 dark:border-slate-600 px-2 py-0.5 text-xs text-slate-500 dark:text-slate-400 bg-slate-50 dark:bg-slate-700/50">
+                                +{a.tags.length - 3}
+                              </span>
+                            )}
                           </div>
                         )}
                         
-                        <Button size="sm" className="w-full rounded-xl gap-2 group-hover:bg-gradient-to-r group-hover:from-purple-500 group-hover:to-pink-500 transition-all duration-300">
+                        <Button size="sm" className="w-full rounded-xl gap-2 text-xs group-hover:bg-gradient-to-r group-hover:from-purple-500 group-hover:to-pink-500 transition-all duration-300">
                           <Zap className="h-4 w-4" />
                           Usar agente
                         </Button>
