@@ -269,9 +269,9 @@ function DomainCard({ domain, query }: { domain: Domain, query?: string }) {
         <div className="mb-6 flex items-start justify-between">
           <div className="flex items-center gap-4">
             <div className="relative">
-              <div className="absolute inset-0 bg-gradient-to-r from-purple-500 to-pink-500 rounded-2xl blur opacity-20 group-hover:opacity-40 transition-opacity"></div>
-              <div className="relative flex h-14 w-14 items-center justify-center rounded-2xl bg-gradient-to-r from-purple-500/10 to-pink-500/10 border border-purple-500/20 group-hover:from-purple-500 group-hover:to-pink-500 group-hover:text-white transition-all duration-300">
-                <Grid3X3 className="h-6 w-6" />
+              <div className={`absolute inset-0 bg-gradient-to-r ${domain.gradient} rounded-2xl blur opacity-20 group-hover:opacity-40 transition-opacity`}></div>
+              <div className={`relative flex h-14 w-14 items-center justify-center rounded-2xl bg-gradient-to-r ${domain.gradient.replace('from-', 'from-').replace('to-', 'to-')}/10 border ${domain.gradient.replace('from-', 'border-').split(' ')[0]}/20 group-hover:${domain.gradient} group-hover:text-white transition-all duration-300 text-2xl`}>
+                {domain.icon}
               </div>
             </div>
             <div>
