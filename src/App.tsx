@@ -1,7 +1,7 @@
 import React, { useMemo, useState } from 'react'
 import { DOMAINS, type Domain } from './data/domains'
 import { Button } from './components/ui/button'
-import { Search, Hash, Grid3X3, Moon, Sun, X, Filter, Users, Tag } from 'lucide-react'
+import { Search, Hash, Grid3X3, Moon, Sun, X, Filter, Users, Tag, Sparkles, Zap, Star, ArrowRight, Eye, ChevronDown, ChevronUp } from 'lucide-react'
 
 function useTheme() {
   const [dark, setDark] = useState(() => {
@@ -32,7 +32,6 @@ const App: React.FC = () => {
     if (!query) return items
     
     return items.filter((d) => {
-      // Búsqueda más inteligente que incluye palabras parciales
       const searchText = [d.title, d.description, d.key].join(' ').toLowerCase()
       const queryWords = query.split(' ').filter(word => word.length > 0)
       
@@ -48,127 +47,181 @@ const App: React.FC = () => {
   const hasActiveFilters = q.trim() !== '' || selected !== null
 
   return (
-    <div className="min-h-screen">
-      <header className="sticky top-0 z-40 border-b bg-card/95 backdrop-blur supports-[backdrop-filter]:bg-card/95">
-        <div className="container flex h-16 items-center justify-between gap-4">
-          <div className="flex items-center gap-3">
-            <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-primary text-primary-foreground">
-              <Grid3X3 className="h-4 w-4" />
+    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-50 dark:from-slate-900 dark:via-slate-800 dark:to-indigo-900">
+      {/* Animated background elements */}
+      <div className="fixed inset-0 overflow-hidden pointer-events-none">
+        <div className="absolute -top-40 -right-40 w-80 h-80 bg-gradient-to-br from-purple-400/20 to-pink-400/20 rounded-full blur-3xl animate-pulse"></div>
+        <div className="absolute -bottom-40 -left-40 w-80 h-80 bg-gradient-to-br from-blue-400/20 to-cyan-400/20 rounded-full blur-3xl animate-pulse delay-1000"></div>
+        <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-96 h-96 bg-gradient-to-br from-indigo-400/10 to-purple-400/10 rounded-full blur-3xl animate-pulse delay-500"></div>
+      </div>
+
+      <header className="sticky top-0 z-40 border-b border-white/20 bg-white/80 dark:bg-slate-900/80 backdrop-blur-xl supports-[backdrop-filter]:bg-white/80 dark:supports-[backdrop-filter]:bg-slate-900/80">
+        <div className="container flex h-20 items-center justify-between gap-4">
+          <div className="flex items-center gap-4">
+            <div className="relative">
+              <div className="absolute inset-0 bg-gradient-to-r from-purple-500 to-pink-500 rounded-2xl blur opacity-75 animate-pulse"></div>
+              <div className="relative flex h-12 w-12 items-center justify-center rounded-2xl bg-gradient-to-r from-purple-500 to-pink-500 text-white shadow-lg">
+                <Sparkles className="h-6 w-6" />
+              </div>
             </div>
             <div>
-              <h1 className="text-lg font-semibold tracking-tight">Catálogo de IA</h1>
-              <p className="text-xs text-muted-foreground">Agentes especializados por dominio</p>
+              <h1 className="text-2xl font-bold bg-gradient-to-r from-purple-600 to-pink-600 dark:from-purple-400 dark:to-pink-400 bg-clip-text text-transparent">
+                Catálogo de IA
+              </h1>
+              <p className="text-sm text-slate-600 dark:text-slate-400 flex items-center gap-1">
+                <Zap className="h-3 w-3" />
+                Agentes especializados por dominio
+              </p>
             </div>
           </div>
-          <div className="flex items-center gap-2">
-            <Button variant="ghost" size="icon" aria-label="Cambiar tema" onClick={toggle}>
-              {dark ? <Sun className="h-4 w-4" /> : <Moon className="h-4 w-4" />}
+          <div className="flex items-center gap-3">
+            <div className="hidden sm:flex items-center gap-2 px-3 py-1.5 rounded-full bg-gradient-to-r from-emerald-500/10 to-teal-500/10 border border-emerald-500/20">
+              <Star className="h-3 w-3 text-emerald-600 dark:text-emerald-400" />
+              <span className="text-xs font-medium text-emerald-700 dark:text-emerald-300">
+                {DOMAINS.length} dominios
+              </span>
+            </div>
+            <Button 
+              variant="ghost" 
+              size="icon" 
+              aria-label="Cambiar tema" 
+              onClick={toggle}
+              className="relative overflow-hidden group"
+            >
+              <div className="absolute inset-0 bg-gradient-to-r from-yellow-400/20 to-orange-400/20 opacity-0 group-hover:opacity-100 transition-opacity rounded-lg"></div>
+              {dark ? <Sun className="h-4 w-4 relative z-10" /> : <Moon className="h-4 w-4 relative z-10" />}
             </Button>
           </div>
         </div>
       </header>
 
-      <main className="container py-6">
-        {/* Barra de búsqueda mejorada */}
-        <div className="mb-6 space-y-4">
-          <div className="relative">
-            <Search className="absolute left-4 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground" />
-            <input
-              value={q}
-              onChange={(e) => setQ(e.target.value)}
-              placeholder="Buscar por dominio, descripción o funcionalidad..."
-              className="w-full rounded-xl border bg-background pl-12 pr-12 py-4 text-base outline-none focus:ring-2 focus:ring-ring transition-all"
-            />
-            {q && (
-              <Button
-                variant="ghost"
-                size="icon"
-                className="absolute right-2 top-1/2 -translate-y-1/2 h-8 w-8"
-                onClick={() => setQ('')}
-              >
-                <X className="h-4 w-4" />
-              </Button>
-            )}
+      <main className="container py-8 relative z-10">
+        {/* Hero Search Section */}
+        <div className="mb-12 text-center">
+          <div className="mb-8">
+            <h2 className="text-4xl sm:text-5xl font-bold mb-4 bg-gradient-to-r from-slate-900 via-purple-900 to-slate-900 dark:from-white dark:via-purple-200 dark:to-white bg-clip-text text-transparent">
+              Encuentra tu agente perfecto
+            </h2>
+            <p className="text-lg text-slate-600 dark:text-slate-400 max-w-2xl mx-auto">
+              Explora nuestra colección de agentes de IA especializados, diseñados para potenciar cada área de tu organización
+            </p>
           </div>
 
-          {/* Filtros mejorados */}
-          <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
-            <div className="flex items-center gap-2">
-              <Button
-                variant="outline"
-                size="sm"
-                onClick={() => setShowFilters(!showFilters)}
-                className="gap-2"
-              >
-                <Filter className="h-4 w-4" />
-                Filtros
-                {hasActiveFilters && (
-                  <span className="ml-1 flex h-5 w-5 items-center justify-center rounded-full bg-primary text-xs text-primary-foreground">
-                    {(q ? 1 : 0) + (selected ? 1 : 0)}
-                  </span>
+          {/* Enhanced Search Bar */}
+          <div className="max-w-2xl mx-auto mb-8">
+            <div className="relative group">
+              <div className="absolute inset-0 bg-gradient-to-r from-purple-500/20 to-pink-500/20 rounded-2xl blur opacity-0 group-hover:opacity-100 transition-opacity"></div>
+              <div className="relative">
+                <Search className="absolute left-6 top-1/2 -translate-y-1/2 h-5 w-5 text-slate-400 group-focus-within:text-purple-500 transition-colors" />
+                <input
+                  value={q}
+                  onChange={(e) => setQ(e.target.value)}
+                  placeholder="Buscar por dominio, funcionalidad, tecnología..."
+                  className="w-full rounded-2xl border-2 border-slate-200 dark:border-slate-700 bg-white/80 dark:bg-slate-800/80 backdrop-blur-sm pl-14 pr-14 py-5 text-base outline-none focus:border-purple-500 focus:ring-4 focus:ring-purple-500/20 transition-all placeholder:text-slate-400"
+                />
+                {q && (
+                  <Button
+                    variant="ghost"
+                    size="icon"
+                    className="absolute right-3 top-1/2 -translate-y-1/2 h-8 w-8 hover:bg-slate-100 dark:hover:bg-slate-700"
+                    onClick={() => setQ('')}
+                  >
+                    <X className="h-4 w-4" />
+                  </Button>
                 )}
-              </Button>
-              {hasActiveFilters && (
-                <Button variant="ghost" size="sm" onClick={clearSearch} className="gap-2">
-                  <X className="h-4 w-4" />
-                  Limpiar
-                </Button>
-              )}
+              </div>
             </div>
-            <div className="text-sm text-muted-foreground">
+          </div>
+
+          {/* Enhanced Filters */}
+          <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-center">
+            <Button
+              variant="outline"
+              onClick={() => setShowFilters(!showFilters)}
+              className="gap-2 rounded-full border-2 hover:border-purple-500 hover:bg-purple-50 dark:hover:bg-purple-900/20 transition-all"
+            >
+              <Filter className="h-4 w-4" />
+              Filtros
+              {showFilters ? <ChevronUp className="h-4 w-4" /> : <ChevronDown className="h-4 w-4" />}
+              {hasActiveFilters && (
+                <span className="ml-1 flex h-5 w-5 items-center justify-center rounded-full bg-gradient-to-r from-purple-500 to-pink-500 text-xs text-white font-medium">
+                  {(q ? 1 : 0) + (selected ? 1 : 0)}
+                </span>
+              )}
+            </Button>
+            
+            {hasActiveFilters && (
+              <Button 
+                variant="ghost" 
+                onClick={clearSearch} 
+                className="gap-2 rounded-full hover:bg-red-50 hover:text-red-600 dark:hover:bg-red-900/20 transition-all"
+              >
+                <X className="h-4 w-4" />
+                Limpiar filtros
+              </Button>
+            )}
+            
+            <div className="text-sm text-slate-500 dark:text-slate-400 flex items-center gap-2">
+              <Eye className="h-4 w-4" />
               {filtered.length} de {DOMAINS.length} dominios
             </div>
           </div>
 
-          {/* Tags de filtros */}
+          {/* Collapsible Filter Tags */}
           {showFilters && (
-            <div className="rounded-lg border bg-card p-4">
-              <div className="mb-3 flex items-center gap-2">
-                <Tag className="h-4 w-4 text-muted-foreground" />
-                <span className="text-sm font-medium">Filtrar por dominio</span>
-              </div>
-              <div className="flex flex-wrap gap-2">
-                <Button
-                  variant={selected === null ? 'default' : 'outline'}
-                  size="sm"
-                  onClick={() => setSelected(null)}
-                  className="rounded-full"
-                >
-                  Todos
-                </Button>
-                {DOMAINS.map((d) => (
+            <div className="mt-6 max-w-4xl mx-auto">
+              <div className="rounded-2xl border-2 border-slate-200 dark:border-slate-700 bg-white/60 dark:bg-slate-800/60 backdrop-blur-sm p-6">
+                <div className="mb-4 flex items-center gap-2 justify-center">
+                  <Tag className="h-4 w-4 text-slate-500" />
+                  <span className="text-sm font-medium text-slate-700 dark:text-slate-300">Filtrar por dominio</span>
+                </div>
+                <div className="flex flex-wrap gap-2 justify-center">
                   <Button
-                    key={d.key}
-                    variant={selected === d.key ? 'default' : 'outline'}
+                    variant={selected === null ? 'default' : 'outline'}
                     size="sm"
-                    onClick={() => setSelected(selected === d.key ? null : d.key)}
-                    className="rounded-full gap-2"
+                    onClick={() => setSelected(null)}
+                    className="rounded-full transition-all hover:scale-105"
                   >
-                    <Hash className="h-3 w-3" />
-                    {d.title}
+                    Todos los dominios
                   </Button>
-                ))}
+                  {DOMAINS.map((d) => (
+                    <Button
+                      key={d.key}
+                      variant={selected === d.key ? 'default' : 'outline'}
+                      size="sm"
+                      onClick={() => setSelected(selected === d.key ? null : d.key)}
+                      className="rounded-full gap-2 transition-all hover:scale-105"
+                    >
+                      <Hash className="h-3 w-3" />
+                      {d.title}
+                    </Button>
+                  ))}
+                </div>
               </div>
             </div>
           )}
         </div>
 
-        {/* Resultados */}
+        {/* Results */}
         {filtered.length === 0 ? (
-          <div className="flex flex-col items-center justify-center py-12 text-center">
-            <div className="mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-muted">
-              <Search className="h-8 w-8 text-muted-foreground" />
+          <div className="flex flex-col items-center justify-center py-20 text-center">
+            <div className="mb-6 relative">
+              <div className="absolute inset-0 bg-gradient-to-r from-slate-200 to-slate-300 dark:from-slate-700 dark:to-slate-600 rounded-full blur opacity-50"></div>
+              <div className="relative flex h-20 w-20 items-center justify-center rounded-full bg-gradient-to-r from-slate-100 to-slate-200 dark:from-slate-800 dark:to-slate-700">
+                <Search className="h-10 w-10 text-slate-400" />
+              </div>
             </div>
-            <h3 className="mb-2 text-lg font-semibold">No se encontraron dominios</h3>
-            <p className="mb-4 text-muted-foreground">
-              Intenta con otros términos de búsqueda o ajusta los filtros
+            <h3 className="mb-3 text-2xl font-bold text-slate-800 dark:text-slate-200">No se encontraron dominios</h3>
+            <p className="mb-6 text-slate-600 dark:text-slate-400 max-w-md">
+              Intenta con otros términos de búsqueda o ajusta los filtros para encontrar el agente perfecto
             </p>
-            <Button variant="outline" onClick={clearSearch}>
-              Limpiar búsqueda
+            <Button onClick={clearSearch} className="rounded-full gap-2">
+              <ArrowRight className="h-4 w-4" />
+              Explorar todos los dominios
             </Button>
           </div>
         ) : (
-          <section className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+          <section className="grid gap-8 sm:grid-cols-2 lg:grid-cols-3">
             {filtered.map((d) => (
               <DomainCard key={d.key} domain={d} query={q} />
             ))}
@@ -176,16 +229,23 @@ const App: React.FC = () => {
         )}
       </main>
 
-      <footer className="border-t bg-muted/30">
-        <div className="container py-6">
-          <div className="flex flex-col gap-2 text-center text-sm text-muted-foreground sm:flex-row sm:justify-between sm:text-left">
-            <div>
-              {new Date().getFullYear()} · Catálogo de Agentes de IA
+      <footer className="relative z-10 border-t border-white/20 bg-white/60 dark:bg-slate-900/60 backdrop-blur-xl mt-20">
+        <div className="container py-8">
+          <div className="flex flex-col gap-4 text-center text-sm text-slate-600 dark:text-slate-400 sm:flex-row sm:justify-between sm:text-left">
+            <div className="flex items-center justify-center sm:justify-start gap-2">
+              <Sparkles className="h-4 w-4 text-purple-500" />
+              <span>{new Date().getFullYear()} · Catálogo de Agentes de IA</span>
             </div>
             <div className="flex items-center justify-center gap-4 sm:justify-end">
-              <span>Tema {dark ? 'oscuro' : 'claro'}</span>
+              <span className="flex items-center gap-1">
+                <span className={`w-2 h-2 rounded-full ${dark ? 'bg-slate-400' : 'bg-yellow-400'}`}></span>
+                Tema {dark ? 'oscuro' : 'claro'}
+              </span>
               <span>•</span>
-              <span>{DOMAINS.length} dominios disponibles</span>
+              <span className="flex items-center gap-1">
+                <Grid3X3 className="h-3 w-3" />
+                {DOMAINS.length} dominios disponibles
+              </span>
             </div>
           </div>
         </div>
@@ -200,45 +260,55 @@ function DomainCard({ domain, query }: { domain: Domain, query?: string }) {
   const agentCount = AGENTS.filter(a => a.domain === domain.key).length
   
   return (
-    <div className="group rounded-xl border bg-card p-6 transition-all hover:shadow-lg hover:shadow-primary/5 hover:border-primary/20">
-      <div className="mb-4 flex items-start justify-between">
-        <div className="flex items-center gap-3">
-          <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-primary/10 text-primary group-hover:bg-primary group-hover:text-primary-foreground transition-colors">
-            <Grid3X3 className="h-5 w-5" />
-          </div>
-          <div>
-            <h3 className="font-semibold leading-tight group-hover:text-primary transition-colors">
-              {domain.title}
-            </h3>
-            <div className="flex items-center gap-1 mt-1">
-              <Users className="h-3 w-3 text-muted-foreground" />
-              <span className="text-xs text-muted-foreground">
-                {agentCount} agente{agentCount !== 1 ? 's' : ''}
-              </span>
+    <div className="group relative">
+      {/* Glow effect */}
+      <div className="absolute -inset-1 bg-gradient-to-r from-purple-500/20 via-pink-500/20 to-indigo-500/20 rounded-3xl blur opacity-0 group-hover:opacity-100 transition-all duration-500"></div>
+      
+      <div className="relative rounded-3xl border-2 border-slate-200/50 dark:border-slate-700/50 bg-white/80 dark:bg-slate-800/80 backdrop-blur-sm p-8 transition-all duration-300 hover:border-purple-500/50 hover:shadow-2xl hover:shadow-purple-500/10 hover:-translate-y-1">
+        <div className="mb-6 flex items-start justify-between">
+          <div className="flex items-center gap-4">
+            <div className="relative">
+              <div className="absolute inset-0 bg-gradient-to-r from-purple-500 to-pink-500 rounded-2xl blur opacity-20 group-hover:opacity-40 transition-opacity"></div>
+              <div className="relative flex h-14 w-14 items-center justify-center rounded-2xl bg-gradient-to-r from-purple-500/10 to-pink-500/10 border border-purple-500/20 group-hover:from-purple-500 group-hover:to-pink-500 group-hover:text-white transition-all duration-300">
+                <Grid3X3 className="h-6 w-6" />
+              </div>
+            </div>
+            <div>
+              <h3 className="text-xl font-bold leading-tight group-hover:bg-gradient-to-r group-hover:from-purple-600 group-hover:to-pink-600 group-hover:bg-clip-text group-hover:text-transparent transition-all duration-300">
+                {domain.title}
+              </h3>
+              <div className="flex items-center gap-2 mt-2">
+                <div className="flex items-center gap-1 px-2 py-1 rounded-full bg-gradient-to-r from-emerald-500/10 to-teal-500/10 border border-emerald-500/20">
+                  <Users className="h-3 w-3 text-emerald-600 dark:text-emerald-400" />
+                  <span className="text-xs font-medium text-emerald-700 dark:text-emerald-300">
+                    {agentCount} agente{agentCount !== 1 ? 's' : ''}
+                  </span>
+                </div>
+              </div>
             </div>
           </div>
         </div>
-      </div>
-      
-      <p className="text-sm text-muted-foreground leading-relaxed mb-4">
-        {domain.description}
-      </p>
-      
-      {domain.examples && (
-        <div className="mb-4">
-          <ul className="space-y-1">
-            {domain.examples.slice(0, 3).map((e, i) => (
-              <li key={i} className="flex items-start gap-2 text-xs text-muted-foreground">
-                <span className="mt-1.5 h-1 w-1 rounded-full bg-primary/60 flex-shrink-0" />
-                <span>{e}</span>
-              </li>
-            ))}
-          </ul>
+        
+        <p className="text-slate-600 dark:text-slate-300 leading-relaxed mb-6 text-base">
+          {domain.description}
+        </p>
+        
+        {domain.examples && (
+          <div className="mb-6">
+            <ul className="space-y-2">
+              {domain.examples.slice(0, 3).map((e, i) => (
+                <li key={i} className="flex items-start gap-3 text-sm text-slate-500 dark:text-slate-400">
+                  <div className="mt-2 h-1.5 w-1.5 rounded-full bg-gradient-to-r from-purple-500 to-pink-500 flex-shrink-0" />
+                  <span>{e}</span>
+                </li>
+              ))}
+            </ul>
+          </div>
+        )}
+        
+        <div className="pt-6 border-t border-slate-200/50 dark:border-slate-700/50">
+          <AgentsPreview domainKey={domain.key} query={query} />
         </div>
-      )}
-      
-      <div className="pt-2 border-t">
-        <AgentsPreview domainKey={domain.key} query={query} />
       </div>
     </div>
   )
@@ -261,70 +331,83 @@ function AgentsPreview({ domainKey, query }: { domainKey: Domain['key'], query?:
   return (
     <div>
       <Button 
-        size="sm" 
-        variant="secondary" 
         onClick={() => setOpen(true)}
-        className="w-full justify-between group-hover:bg-primary group-hover:text-primary-foreground transition-colors"
+        className="w-full justify-between group-hover:bg-gradient-to-r group-hover:from-purple-500 group-hover:to-pink-500 group-hover:text-white transition-all duration-300 rounded-2xl gap-3"
       >
-        <span>Ver agentes</span>
-        <span className="ml-2 rounded-full bg-background/20 px-2 py-0.5 text-xs">
+        <span className="flex items-center gap-2">
+          <Eye className="h-4 w-4" />
+          Explorar agentes
+        </span>
+        <span className="flex items-center gap-2 px-3 py-1 rounded-full bg-white/20 text-xs font-medium">
           {agents.length}
+          <ArrowRight className="h-3 w-3" />
         </span>
       </Button>
       
       {open && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
           <div className="absolute inset-0 bg-black/60 backdrop-blur-sm" onClick={() => setOpen(false)} />
-          <div className="relative z-10 w-full max-w-3xl max-h-[80vh] rounded-xl border bg-background shadow-2xl">
-            <div className="sticky top-0 flex items-center justify-between gap-4 border-b bg-background p-6 rounded-t-xl">
+          <div className="relative z-10 w-full max-w-6xl max-h-[85vh] rounded-3xl border-2 border-slate-200 dark:border-slate-700 bg-white/95 dark:bg-slate-900/95 backdrop-blur-xl shadow-2xl">
+            <div className="sticky top-0 flex items-center justify-between gap-4 border-b border-slate-200 dark:border-slate-700 bg-white/80 dark:bg-slate-900/80 backdrop-blur-sm p-8 rounded-t-3xl">
               <div>
-                <h4 className="text-lg font-semibold">
+                <h4 className="text-2xl font-bold bg-gradient-to-r from-purple-600 to-pink-600 bg-clip-text text-transparent">
                   Agentes de {DOMAINS.find(d => d.key === domainKey)?.title}
                 </h4>
-                <p className="text-sm text-muted-foreground">
-                  {agents.length} agente{agents.length !== 1 ? 's' : ''} disponible{agents.length !== 1 ? 's' : ''}
+                <p className="text-slate-600 dark:text-slate-400 flex items-center gap-2 mt-1">
+                  <Sparkles className="h-4 w-4" />
+                  {agents.length} agente{agents.length !== 1 ? 's' : ''} especializado{agents.length !== 1 ? 's' : ''} disponible{agents.length !== 1 ? 's' : ''}
                 </p>
               </div>
-              <Button variant="ghost" size="icon" onClick={() => setOpen(false)}>
-                <X className="h-4 w-4" />
+              <Button variant="ghost" size="icon" onClick={() => setOpen(false)} className="rounded-full">
+                <X className="h-5 w-5" />
               </Button>
             </div>
             
-            <div className="p-6 overflow-auto max-h-[60vh]">
+            <div className="p-8 overflow-auto max-h-[65vh]">
               {agents.length === 0 ? (
-                <div className="flex flex-col items-center justify-center py-8 text-center">
-                  <div className="mb-4 flex h-12 w-12 items-center justify-center rounded-full bg-muted">
-                    <Users className="h-6 w-6 text-muted-foreground" />
+                <div className="flex flex-col items-center justify-center py-12 text-center">
+                  <div className="mb-6 relative">
+                    <div className="absolute inset-0 bg-gradient-to-r from-slate-200 to-slate-300 dark:from-slate-700 dark:to-slate-600 rounded-full blur opacity-50"></div>
+                    <div className="relative flex h-16 w-16 items-center justify-center rounded-full bg-gradient-to-r from-slate-100 to-slate-200 dark:from-slate-800 dark:to-slate-700">
+                      <Users className="h-8 w-8 text-slate-400" />
+                    </div>
                   </div>
-                  <p className="text-muted-foreground">
+                  <p className="text-slate-600 dark:text-slate-400 text-lg">
                     No hay agentes que coincidan con la búsqueda
                   </p>
                 </div>
               ) : (
-                <div className="grid gap-4 sm:grid-cols-2">
+                <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
                   {agents.map(a => (
-                    <div key={a.id} className="rounded-lg border p-4 hover:shadow-sm transition-shadow">
-                      <div className="mb-3">
-                        <h5 className="font-medium leading-tight mb-1">{a.name}</h5>
-                        <p className="text-sm text-muted-foreground leading-relaxed">{a.summary}</p>
-                      </div>
-                      
-                      {a.tags && a.tags.length > 0 && (
-                        <div className="mb-3 flex flex-wrap gap-1">
-                          {a.tags.map(t => (
-                            <span 
-                              key={t} 
-                              className="inline-flex items-center rounded-full border px-2 py-1 text-xs text-muted-foreground bg-muted/50"
-                            >
-                              {t}
-                            </span>
-                          ))}
+                    <div key={a.id} className="group relative">
+                      <div className="absolute -inset-1 bg-gradient-to-r from-purple-500/10 via-pink-500/10 to-indigo-500/10 rounded-2xl blur opacity-0 group-hover:opacity-100 transition-all duration-300"></div>
+                      <div className="relative rounded-2xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 p-6 hover:shadow-xl hover:border-purple-500/30 transition-all duration-300">
+                        <div className="mb-4 flex items-start gap-3">
+                          <div className="text-2xl">{a.icon || '🤖'}</div>
+                          <div className="flex-1">
+                            <h5 className="font-bold leading-tight mb-2 group-hover:text-purple-600 dark:group-hover:text-purple-400 transition-colors">{a.name}</h5>
+                            <p className="text-sm text-slate-600 dark:text-slate-300 leading-relaxed">{a.summary}</p>
+                          </div>
                         </div>
-                      )}
-                      
-                      <Button size="sm" className="w-full">
-                        Usar agente
-                      </Button>
+                        
+                        {a.tags && a.tags.length > 0 && (
+                          <div className="mb-4 flex flex-wrap gap-1.5">
+                            {a.tags.map(t => (
+                              <span 
+                                key={t} 
+                                className="inline-flex items-center rounded-full border border-slate-200 dark:border-slate-600 px-2.5 py-1 text-xs text-slate-600 dark:text-slate-300 bg-slate-50 dark:bg-slate-700/50 hover:bg-purple-50 hover:border-purple-200 dark:hover:bg-purple-900/20 transition-colors"
+                              >
+                                {t}
+                              </span>
+                            ))}
+                          </div>
+                        )}
+                        
+                        <Button size="sm" className="w-full rounded-xl gap-2 group-hover:bg-gradient-to-r group-hover:from-purple-500 group-hover:to-pink-500 transition-all duration-300">
+                          <Zap className="h-4 w-4" />
+                          Usar agente
+                        </Button>
+                      </div>
                     </div>
                   ))}
                 </div>
